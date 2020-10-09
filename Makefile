@@ -85,7 +85,8 @@ $(TMPDIR)/DejaVuLGC%.sfd: $(TMPDIR)/DejaVu%.sfd
 	sed -e 's,FontName: DejaVu,FontName: DejaVuLGC,'\
 	    -e 's,FullName: DejaVu,FullName: DejaVu LGC,'\
 	    -e 's,FamilyName: DejaVu,FamilyName: DejaVu LGC,'\
-	    -e 's,"DejaVu \(\(Sans\|Serif\)*\( Condensed\| Mono\)*\( Bold\)*\( Oblique\|Italic\)*\)","DejaVu LGC \1",g' < $< > $@
+	    -e 's,"DejaVu \(\(Sans\|Serif\)*\( Condensed\| Mono\)*\( Bold\)*\( Oblique\|Italic\)*\)","DejaVu LGC \1",g' \
+	    -e 's,"DejaVu \(\(Sans\|Serif\)*\( Condensed\| Code\)*\( Bold\)*\( Oblique\|Italic\)*\)","DejaVu LGC \1",g' < $< > $@
 	@echo "Stripping unwanted glyphs from $@"
 	$(LGC) $@
 	touch -r $< $@
@@ -122,13 +123,14 @@ $(BUILDDIR)/unicover-sans.txt: $(TMPDIR)/DejaVuSans.sfd
 	$(UNICOVER) $(UNICODEDATA) $(BLOCKS) \
 	            $(TMPDIR)/DejaVuSans.sfd "Sans" > $@
 
-$(BUILDDIR)/unicover-lgc.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuLGCSans DejaVuLGCSerif DejaVuLGCSansMono)
+$(BUILDDIR)/unicover-lgc.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuLGCSans DejaVuLGCSerif DejaVuLGCSansMono DejaVuLGCSansCode)
 	@echo "[5] => $@"
 	install -d $(dir $@)
 	$(UNICOVER) $(UNICODEDATA) $(BLOCKS) \
 	            $(TMPDIR)/DejaVuLGCSans.sfd "Sans" \
 	            $(TMPDIR)/DejaVuLGCSerif.sfd "Serif" \
-	            $(TMPDIR)/DejaVuLGCSansMono.sfd "Sans Mono" > $@
+	            $(TMPDIR)/DejaVuLGCSansMono.sfd "Sans Mono" \
+	            $(TMPDIR)/DejaVuLGCSansCode.sfd "Sans Code" > $@
 
 $(BUILDDIR)/langcover.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuSans DejaVuSerif DejaVuSansMono DejaVuSansCode)
 	@echo "[6] => $@"
@@ -153,7 +155,7 @@ else
 	             $(TMPDIR)/DejaVuSans.sfd "Sans" > $@
 endif
 
-$(BUILDDIR)/langcover-lgc.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuLGCSans DejaVuLGCSerif DejaVuLGCSansMono)
+$(BUILDDIR)/langcover-lgc.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuLGCSans DejaVuLGCSerif DejaVuLGCSansMono DejaVuLGCSansCode)
 	@echo "[6] => $@"
 	install -d $(dir $@)
 ifeq "$(FC-LANG)" ""
@@ -162,7 +164,8 @@ else
 	$(LANGCOVER) $(FC-LANG) \
 	             $(TMPDIR)/DejaVuLGCSans.sfd "Sans" \
 	             $(TMPDIR)/DejaVuLGCSerif.sfd "Serif" \
-	             $(TMPDIR)/DejaVuLGCSansMono.sfd "Sans Mono" > $@
+	             $(TMPDIR)/DejaVuLGCSansMono.sfd "Sans Mono" \
+	             $(TMPDIR)/DejaVuLGCSansCode.sfd "Sans Code" > $@
 endif
 
 $(BUILDDIR)/Makefile: Makefile
