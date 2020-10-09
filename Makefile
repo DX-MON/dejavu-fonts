@@ -44,7 +44,7 @@ TTPOSTPROC  = $(SCRIPTSDIR)/ttpostproc.pl
 LGC         = $(SCRIPTSDIR)/lgc.pe
 UNICOVER    = $(SCRIPTSDIR)/unicover.pl
 LANGCOVER   = $(SCRIPTSDIR)/langcover.pl
-STATUS	    = $(SCRIPTSDIR)/status.pl
+STATUS      = $(SCRIPTSDIR)/status.pl
 PROBLEMS    = $(SCRIPTSDIR)/problems.pl
 NORMALIZE   = $(SCRIPTSDIR)/sfdnormalize.pl
 NARROW      = $(SCRIPTSDIR)/narrow.pe
@@ -63,7 +63,7 @@ FONTCONF     := $(wildcard $(FONTCONFDIR)/*.conf)
 FONTCONFLGC  := $(wildcard $(FONTCONFDIR)/*lgc*.conf)
 FONTCONFFULL := $(filter-out $(FONTCONFLGC), $(FONTCONF))
 
-STATICDOC := $(addprefix $(DOCDIR)/, AUTHORS LICENSE NEWS README.md)
+STATICDOC := $(addprefix $(DOCDIR)/, AUTHORS LICENSE NEWS README.md sample.png)
 STATICSRCDOC := $(addprefix $(DOCDIR)/, BUILDING.md)
 GENDOCFULL = unicover.txt langcover.txt status.txt
 GENDOCSANS = unicover-sans.txt langcover-sans.txt
@@ -107,13 +107,14 @@ $(BUILDDIR)/status.txt: $(FULLSFD)
 	install -d $(dir $@)
 	$(STATUS) $(VERSION) $(OLDSTATUS) $(FULLSFD) > $@
 
-$(BUILDDIR)/unicover.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuSans DejaVuSerif DejaVuSansMono)
+$(BUILDDIR)/unicover.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuSans DejaVuSerif DejaVuSansMono DejaVuSansCode)
 	@echo "[5] => $@"
 	install -d $(dir $@)
 	$(UNICOVER) $(UNICODEDATA) $(BLOCKS) \
 	            $(TMPDIR)/DejaVuSans.sfd "Sans" \
 	            $(TMPDIR)/DejaVuSerif.sfd "Serif" \
-	            $(TMPDIR)/DejaVuSansMono.sfd "Sans Mono" > $@
+	            $(TMPDIR)/DejaVuSansMono.sfd "Sans Mono" \
+	            $(TMPDIR)/DejaVuSansCode.sfd "Sans Code" > $@
 
 $(BUILDDIR)/unicover-sans.txt: $(TMPDIR)/DejaVuSans.sfd
 	@echo "[5] => $@"
@@ -129,7 +130,7 @@ $(BUILDDIR)/unicover-lgc.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuLGCSans DejaV
 	            $(TMPDIR)/DejaVuLGCSerif.sfd "Serif" \
 	            $(TMPDIR)/DejaVuLGCSansMono.sfd "Sans Mono" > $@
 
-$(BUILDDIR)/langcover.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuSans DejaVuSerif DejaVuSansMono)
+$(BUILDDIR)/langcover.txt: $(patsubst %, $(TMPDIR)/%.sfd, DejaVuSans DejaVuSerif DejaVuSansMono DejaVuSansCode)
 	@echo "[6] => $@"
 	install -d $(dir $@)
 ifeq "$(FC-LANG)" ""
@@ -138,7 +139,8 @@ else
 	$(LANGCOVER) $(FC-LANG) \
 	             $(TMPDIR)/DejaVuSans.sfd "Sans" \
 	             $(TMPDIR)/DejaVuSerif.sfd "Serif" \
-	             $(TMPDIR)/DejaVuSansMono.sfd "Sans Mono" > $@
+	             $(TMPDIR)/DejaVuSansMono.sfd "Sans Mono" \
+	             $(TMPDIR)/DejaVuSansCode.sfd "Sans Code" > $@
 endif
 
 $(BUILDDIR)/langcover-sans.txt: $(TMPDIR)/DejaVuSans.sfd
